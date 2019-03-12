@@ -1,5 +1,5 @@
 import WebsocketClient from './websocketClient';
-import axios from 'axios';
+import axios from 'axios'
 import createRequestConfig from './createRequestConfig';
 import get from 'lodash/fp/get';
 import shortid from 'shortid';
@@ -19,7 +19,7 @@ export default class GeminiAPI {
       .then(get(`data`))
       .catch(err => Promise.reject(err.response.data));
 
-  requestPrivate = (endpoint, params = {}) => {
+    requestPrivate = (endpoint, params = {}) => {
     if (!this.key || !this.secret) {
       throw new Error(
         `API key and secret key required to use authenticated methods`,
@@ -41,7 +41,7 @@ export default class GeminiAPI {
       secret: this.secret,
     });
 
-    return axios.post(requestUrl, {}, config)
+        return axios.post(requestUrl, {}, config)
       .then(get(`data`))
       .catch(err => Promise.reject(err.response.data));
   }

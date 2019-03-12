@@ -1,37 +1,28 @@
 {
   "name": "gemini-api",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Node.js client for the Gemini cryptocurrency exchange API.",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
     "build": "babel src -d dist",
-    "dev": "nodemon src/index.js --exec babel-node",
-    "test": "ava"
+    "test": "mocha --require @babel/register"
   },
-  "typings": "gemini-api.d.ts",
   "engines": {
     "node": ">=6"
   },
-  "repository": "http://github.com/mjesuele/gemini-api-node.git",
-  "author": "Matthew Jesuele <matt@makeapps.io>",
+  "repository": "http://github.com/dutu/gemini-api-node.git",
+  "author": "dutu <dutu@protonmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "ava": "^0.19.1",
-    "babel-cli": "^6.24.1",
-    "babel-eslint": "^7.2.1",
-    "babel-preset-env": "^1.1.8",
-    "babel-preset-flow": "^6.23.0",
-    "babel-preset-stage-2": "^6.24.1",
-    "eslint": "^3.11.0",
-    "eslint-config-airbnb-base": "^10.0.1",
-    "eslint-config-makeapps": "latest",
-    "eslint-plugin-better": "^0.1.5",
-    "eslint-plugin-fp": "^2.2.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-lodash-fp": "^2.1.3",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.3.4",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/register": "^7.0.0",
+    "chai": "^4.2.0",
     "flow-bin": "^0.43.1",
-    "nodemon": "^1.11.0",
+    "mocha": "^6.0.2",
     "pipe-peek": "^1.0.1"
   },
   "dependencies": {
