@@ -1,12 +1,28 @@
-import WebsocketClient from './websocketClient';
+import WebSocket from 'ws'
 import axios from 'axios'
-import createRequestConfig from './createRequestConfig';
 import get from 'lodash/fp/get';
 import shortid from 'shortid';
+import crypto from 'crypto';
 
-export default class GeminiAPI {
-  static WebsocketClient = WebsocketClient;
+const createRequestConfig = function createRequestConfig ({ key, secret, payload }) {
+  const encodedPayload = (Buffer.from(JSON.stringify(payload)))
+    .toString(`base64`)
 
+  const signature = crypto
+    .createHmac(`sha384`, secret)
+    .update(encodedPayload)
+    .digest(`hex`)
+
+  return {
+    headers: {
+      'X-GEMINI-APIKEY': key,
+      'X-GEMINI-PAYLOAD': encodedPayload,
+      'X-GEMINI-SIGNATURE': signature,
+    },
+  }
+}
+
+export default class Gemini {
   constructor({ key, secret, sandbox = false } = { sandbox: false }) {
     this.key = key;
     this.secret = secret;
@@ -101,4 +117,21 @@ export default class GeminiAPI {
 
   newAddress = (currency) =>
     this.requestPrivate(`/deposit/${currency}/newAddress`)
+
+  newOrderEventsWebSocket() {
+    const requestPath = `/v1/order/events`;
+    this.orderUrl = `${this.baseUrl}${requestPath}`;
+    return new WebSocket(this.orderUrl, createRequestConfig({
+      key: this.key,
+      secret: this.secret,
+      payload: {
+        nonce: Date.now(),
+        request: requestPath,
+      },
+    }))
+  }
+
+  newMarketDataWebSocket(symbol) {
+    return new WebSocket(`${this.baseUrl}/v1/marketdata/${symbol}`)
+  }
 }

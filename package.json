@@ -4,12 +4,12 @@
   "description": "Node.js client for the Gemini cryptocurrency exchange API.",
   "main": "./dist/index.js",
   "scripts": {
-    "start": "node dist/index.js",
+    "test": "mocha --require @babel/register",
     "build": "babel src -d dist",
-    "test": "mocha --require @babel/register"
+    "prepublish": "npm run build"
   },
   "engines": {
-    "node": ">=6"
+    "node": ">=10"
   },
   "repository": "http://github.com/dutu/gemini-api-node.git",
   "author": "dutu <dutu@protonmail.com>",
@@ -21,15 +21,13 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
-    "flow-bin": "^0.43.1",
-    "mocha": "^6.0.2",
-    "pipe-peek": "^1.0.1"
+    "mocha": "^6.0.2"
   },
   "dependencies": {
-    "axios": "^0.16.0",
+    "axios": "^0.18.0",
     "lodash": "^4.17.4",
-    "qs": "^6.4.0",
+    "save": "^2.3.3",
     "shortid": "^2.2.8",
-    "ws": "^2.2.3"
+    "ws": "^6.2.0"
   }
 }

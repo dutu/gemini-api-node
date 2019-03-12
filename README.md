@@ -1,11 +1,12 @@
-# gemini-api
+[![Build Status](https://travis-ci.com/dutu/gemini-api-node.svg?branch=master)](https://travis-ci.com/dutu/gemini-api-node)
+# gemini-api-node
 
-Gemini cryptocurrency exchange API wrapper for Node.js
+**gemini-api-node** is a simple node.js wrapper for Gemini REST and WebSocket API.
 
 ## Installation
 
 ```
-yarn add gemini-api
+npm install --save gemini-api-node
 ```
 
 ## Usage

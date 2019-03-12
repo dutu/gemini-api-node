@@ -1,10 +1,9 @@
 import chai from 'chai'
 const expect = chai.expect
 
-import GeminiAPI from '../src'
+import Gemini from '../src'
 
-const restAPI = new GeminiAPI({key: process.env.APIKEY, secret:process.env.APISECRET, sandbox: true })
-const websocketAPI = new GeminiAPI.WebsocketClient({key: process.env.APIKEY, secret:process.env.APISECRET, sandbox: true })
+const gemini = new Gemini({key: process.env.APIKEY, secret:process.env.APISECRET, sandbox: true })
 const orderParams = {
   amount: `1`,
   price: `100`,
@@ -34,7 +33,7 @@ let methods = [
 describe('rest API methods', async function() {
   methods.forEach(method => {
     it(`${method[0]}`, async function () {
-      let res = await restAPI[method[0]](...method[1])
+      let res = await gemini[method[0]](...method[1])
         .catch()
       order_id.order_id = res.order_id && res.order_id || order_id.order_id
     })
@@ -42,24 +41,50 @@ describe('rest API methods', async function() {
 })
 
 
-const fiveSeconds = 5000;
-/*
+const TIMEOUT = 5000
 
-test(`market data websocket API`, t =>
-  new Promise((resolve, reject) => {
-    websocketAPI.openMarketSocket(`btcusd`, resolve);
-    setTimeout(reject, fiveSeconds);
-  })
-  .then(() => t.pass())
-  .catch(err => t.fail(err.message))
-);
+describe("WebSocket - market data", function () {
+  it('market data', (done) => {
+    let open = false
+    let message = false
+    let timeoutId = setTimeout(function() {
+      if (!open) expect(false, 'open has not been received').to.be.ok
+      if (!message) expect(false, 'message has not been received').to.be.ok
+      done()
+    }, TIMEOUT)
 
-test(`order events websocket API`, t =>
-  new Promise((resolve, reject) => {
-    websocketAPI.openOrderSocket(resolve);
-    setTimeout(reject, fiveSeconds);
+    const marketDataWebSocket = gemini.newMarketDataWebSocket(`btcusd`)
+    marketDataWebSocket.onopen = (...args) => {
+      open = true
+    }
+
+    marketDataWebSocket.onmessage = (...args) => {
+      message = true
+      clearTimeout(timeoutId);
+      done();
+    }
   })
-  .then(() => t.pass())
-  .catch(err => t.fail(err.message))
-);
-*/
+});
+
+describe("WebSocket - order events", function () {
+  it('market data', (done) => {
+    let open = false
+    let message = false
+    let timeoutId = setTimeout(function() {
+      if (!open) expect(false, 'open has not been received').to.be.ok
+      if (!message) expect(false, 'message has not been received').to.be.ok
+      done()
+    }, TIMEOUT)
+
+    const orderEventsWebSocket = gemini.newOrderEventsWebSocket(`btcusd`)
+    orderEventsWebSocket.onopen = (...args) => {
+      open = true
+    }
+
+    orderEventsWebSocket.onmessage = (...args) => {
+      message = true
+      clearTimeout(timeoutId);
+      done();
+    }
+  })
+});
