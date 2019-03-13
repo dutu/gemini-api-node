@@ -45,15 +45,17 @@ const TIMEOUT = 5000
 
 describe("WebSocket - market data", function () {
   it('market data', (done) => {
+    let isdone  = false
     let open = false
     let message = false
     let timeoutId = setTimeout(function() {
       if (!open) expect(false, 'open has not been received').to.be.ok
       if (!message) expect(false, 'message has not been received').to.be.ok
-      done()
+      isdone || done()
+      isdone = true
     }, TIMEOUT)
 
-    const marketDataWebSocket = gemini.newMarketDataWebSocket(`btcusd`)
+    const marketDataWebSocket = gemini.newWebSocketMarketData(`btcusd`)
     marketDataWebSocket.onopen = (...args) => {
       open = true
     }
@@ -61,22 +63,25 @@ describe("WebSocket - market data", function () {
     marketDataWebSocket.onmessage = (...args) => {
       message = true
       clearTimeout(timeoutId);
-      done();
+      isdone || done()
+      isdone = true
     }
   })
 });
 
 describe("WebSocket - order events", function () {
   it('market data', (done) => {
+    let isdone  = false
     let open = false
     let message = false
     let timeoutId = setTimeout(function() {
       if (!open) expect(false, 'open has not been received').to.be.ok
       if (!message) expect(false, 'message has not been received').to.be.ok
-      done()
+      isdone || done()
+      isdone = true
     }, TIMEOUT)
 
-    const orderEventsWebSocket = gemini.newOrderEventsWebSocket(`btcusd`)
+    const orderEventsWebSocket = gemini.newWebSocketOrderEvents(`btcusd`)
     orderEventsWebSocket.onopen = (...args) => {
       open = true
     }
@@ -84,7 +89,8 @@ describe("WebSocket - order events", function () {
     orderEventsWebSocket.onmessage = (...args) => {
       message = true
       clearTimeout(timeoutId);
-      done();
+      isdone || done()
+      isdone = true
     }
   })
 });

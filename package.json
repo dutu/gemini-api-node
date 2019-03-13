@@ -1,23 +1,29 @@
 {
-  "name": "gemini-api",
-  "version": "2.0.5",
-  "description": "Node.js client for the Gemini cryptocurrency exchange API.",
+  "name": "gemini-api-node",
+  "version": "3.0.0",
+  "description": "Simple node.js wrapper for Gemini REST and WebSocket API",
   "main": "./dist/index.js",
   "scripts": {
     "test": "mocha --require @babel/register",
     "build": "babel src -d dist",
     "prepublish": "npm run build"
   },
-  "engines": {
-    "node": ">=10"
-  },
   "repository": "http://github.com/dutu/gemini-api-node.git",
+  "keywords": [
+    "api",
+    "gemini",
+    "bitcoin",
+    "btc",
+    "eth",
+    "REST",
+    "WebSocket"
+  ],
   "author": "dutu <dutu@protonmail.com>",
   "license": "MIT",
+  "homepage": "https://github.com/dutu/gemini-api-node",
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.4",
-    "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/preset-env": "^7.3.4",
     "@babel/register": "^7.0.0",
     "chai": "^4.2.0",
@@ -25,9 +31,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "lodash": "^4.17.4",
-    "save": "^2.3.3",
-    "shortid": "^2.2.8",
     "ws": "^6.2.0"
   }
 }

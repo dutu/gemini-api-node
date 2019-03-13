@@ -1,7 +1,5 @@
 import WebSocket from 'ws'
 import axios from 'axios'
-import get from 'lodash/fp/get';
-import shortid from 'shortid';
 import crypto from 'crypto';
 
 const createRequestConfig = function createRequestConfig ({ key, secret, payload }) {
@@ -30,12 +28,12 @@ export default class Gemini {
     this.baseUrl = `https://${subdomain}.gemini.com`;
   }
 
-  requestPublic = (endpoint, params = {}) =>
-    axios.get(`${this.baseUrl}/v1${endpoint}`, { params })
-      .then(get(`data`))
-      .catch(err => Promise.reject(err.response.data));
+  async requestPublic(endpoint, params = {}) {
+    let res  = await axios.get(`${this.baseUrl}/v1${endpoint}`, { params })
+    return res.data
+  }
 
-    requestPrivate = (endpoint, params = {}) => {
+  async requestPrivate(endpoint, params = {}) {
     if (!this.key || !this.secret) {
       throw new Error(
         `API key and secret key required to use authenticated methods`,
@@ -44,7 +42,6 @@ export default class Gemini {
 
     const requestPath = `/v1${endpoint}`;
     const requestUrl = `${this.baseUrl}${requestPath}`;
-
     const payload = {
       nonce: Date.now(),
       request: requestPath,
@@ -57,68 +54,85 @@ export default class Gemini {
       secret: this.secret,
     });
 
-        return axios.post(requestUrl, {}, config)
-      .then(get(`data`))
-      .catch(err => Promise.reject(err.response.data));
+    let res = await axios.post(requestUrl, {}, config)
+    return res.data
   }
 
   // Public API
-  getAllSymbols = () =>
-    this.requestPublic(`/symbols`)
+  getAllSymbols() {
+    return this.requestPublic(`/symbols`)
+  }
 
-  getTicker = symbol =>
-    this.requestPublic(`/pubticker/${symbol}`)
+  getTicker(symbol) {
+    return this.requestPublic(`/pubticker/${symbol}`)
+  }
 
-  getOrderBook = (symbol, params = {}) =>
-    this.requestPublic(`/book/${symbol}`, params)
+  getOrderBook(symbol, params = {}) {
+    return this.requestPublic(`/book/${symbol}`, params)
+  }
 
-  getTradeHistory = (symbol, params = {}) =>
-    this.requestPublic(`/trades/${symbol}`, params)
+  getTradeHistory(symbol, params = {}) {
+    return this.requestPublic(`/trades/${symbol}`, params)
+  }
 
-  getCurrentAuction = symbol =>
-    this.requestPublic(`/auction/${symbol}`);
+  getCurrentAuction(symbol) {
+    return this.requestPublic(`/auction/${symbol}`)
+  }
 
-  getAuctionHistory = (symbol, params = {}) =>
-    this.requestPublic(`/auction/${symbol}/history`, params)
+  getAuctionHistory(symbol, params = {}) {
+    return this.requestPublic(`/auction/${symbol}/history`, params)
+  }
 
   // Order Placement API
-  newOrder = (params = {}) =>
-    this.requestPrivate(`/order/new`, {
-      client_order_id: shortid(),
+  newOrder(params = {}) {
+    return this.requestPrivate(`/order/new`, {
       type: `exchange limit`,
       ...params,
     })
+  }
 
-  cancelOrder = ({ order_id } = {}) =>
-    this.requestPrivate(`/order/cancel`, { order_id })
+  cancelOrder({ order_id } = {}) {
+    return this.requestPrivate(`/order/cancel`, { order_id })
+  }
 
-  cancelAllSessionOrders = () =>
-    this.requestPrivate(`/order/cancel/session`)
+  cancelAllSessionOrders() {
+    return this.requestPrivate(`/order/cancel/session`)
+  }
 
-  cancelAllActiveOrders = () =>
-    this.requestPrivate(`/order/cancel/all`)
+
+  cancelAllActiveOrders() {
+    return this.requestPrivate(`/order/cancel/all`)
+  }
 
   // Order Status API
-  getMyOrderStatus = ({ order_id } = {}) =>
-    this.requestPrivate(`/order/status`, { order_id })
+  getMyOrderStatus({ order_id } = {}) {
+    return this.requestPrivate(`/order/status`, { order_id })
+  }
 
-  getMyActiveOrders = () =>
-    this.requestPrivate(`/orders`)
+  getMyActiveOrders() {
+    return this.requestPrivate(`/orders`)
+  }
 
-  getMyPastTrades = (params = {}) =>
-    this.requestPrivate(`/mytrades`, params)
 
-  getMyTradeVolume = () =>
-    this.requestPrivate(`/tradevolume`)
+  getMyPastTrades (params = {}) {
+    return this.requestPrivate(`/mytrades`, params)
+  }
+
+  getMyTradeVolume() {
+    return this.requestPrivate(`/tradevolume`)
+  }
 
   // Fund Management API
-  getMyAvailableBalances = () =>
-    this.requestPrivate(`/balances`)
+  getMyAvailableBalances() {
+    return this.requestPrivate(`/balances`)
+  }
 
-  newAddress = (currency) =>
-    this.requestPrivate(`/deposit/${currency}/newAddress`)
+  newAddress(currency) {
+    return this.requestPrivate(`/deposit/${currency}/newAddress`)
+  }
 
-  newOrderEventsWebSocket() {
+  // WebSocket
+  newWebSocketOrderEvents() {
     const requestPath = `/v1/order/events`;
     this.orderUrl = `${this.baseUrl}${requestPath}`;
     return new WebSocket(this.orderUrl, createRequestConfig({
@@ -131,7 +145,7 @@ export default class Gemini {
     }))
   }
 
-  newMarketDataWebSocket(symbol) {
+  newWebSocketMarketData(symbol) {
     return new WebSocket(`${this.baseUrl}/v1/marketdata/${symbol}`)
   }
 }

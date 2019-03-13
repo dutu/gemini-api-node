@@ -1,51 +1,68 @@
-[![Build Status](https://travis-ci.com/dutu/gemini-api-node.svg?branch=master)](https://travis-ci.com/dutu/gemini-api-node)
-# gemini-api-node
+gemini-api-node
+====
+[![Build Status](https://travis-ci.com/dutu/gemini-api-node.svg?branch=master)](https://travis-ci.com/dutu/gemini-api-node) [![Dependency Status](https://dependencyci.com/github/dutu/gemini-api-node/badge)](https://dependencyci.com/github/dutu/gemini-api-node) 
 
 **gemini-api-node** is a simple node.js wrapper for Gemini REST and WebSocket API.
 
-## Installation
+### Contents
+* [Changelog](#changelog)
+* [Installation](#installation)
+* [Quick examples](#quick-examples)
+* [API](#api)
+	* REST API
+	* WebSocket API
+* [Contributors](#contributors)
+* [License](#license)
+
+
+# Changelog
+
+See detailed [Changelog](CHANGELOG.md)
+
+# Installation
 
 ```
 npm install --save gemini-api-node
 ```
 
-## Usage
+# Quick examples
 
 Clients for both the [REST API](https://docs.gemini.com/rest-api/) and
 [streaming WebSocket API](https://docs.gemini.com/websocket-api/) are included.
 Private endpoints as indicated in the API docs require authentication with an API
 key and secret key.
 
-### Example usage:
+### REST API example:
 
-```javascript
-import GeminiAPI from 'gemini-api';
+```js
+import Gemini from 'gemini-api-node'
 
-const restClient = new GeminiAPI({ key, secret, sandbox: false });
-const websocketClient =
-  new GeminiAPI.WebsocketClient({ key, secret, sandbox: false });
-
-restClient.getOrderBook('btcusd', { limit_asks: 10, limit_bids: 10 })
+const gemini = new Gemini({ key, secret, sandbox: false })
+gemini.getOrderBook('btcusd', { limit_asks: 10, limit_bids: 10 })
   .then(console.log)
-  .catch(console.error);
-
-websocketClient.openMarketSocket('btcusd', () => {
-  websocketClient.addMarketMessageListener(data =>
-    doSomethingCool(data)
-  );
-});
-
-// The methods are bound properly, so feel free to destructure them:
-const { getTicker } = restClient;
-getTicker('btcusd')
-  .then(data =>
-    console.log(`Last trade: $${data.last} / BTC`)
-  )
+  .catch(console.error)
 ```
 
-## API
+### WebSocket API example:
 
-### REST
+```js
+import Gemini from 'gemini-api-node'
+
+const gemini = new Gemini({ key, secret, sandbox: false })
+gemini.newWebSocketOrderEvents()
+
+gemini.onopen = () => {
+  console.log('Websocket is open')
+}
+  
+gemini.onmessage = (...args) => {
+  console.log('Websocket message received')
+}
+```
+
+# API
+
+## REST
 All methods return promises.
 * getAllSymbols()
 * getTicker(symbol)
@@ -64,20 +81,13 @@ All methods return promises.
 * getMyAvailableBalances()
 * newAddress(currency)
 
-### WebSocket
-* openMarketSocket(symbol, onOpen)
-* openOrderSocket(onOpen)
-* addMarketMessageListener(listener)
-* addOrderMessageListener(listener)
-* removeMarketMessageListener(listener)
-* removeOrderMessageListener(listener)
-* addMarketListener(event, listener)
-* addOrderListener(event, listener)
-* removeMarketListener(event, listener)
-* removeOrderListener(event, listener)
+## WebSocket
+* newWebSocketMarketData(symbol)
+* newWebSocketOrderEvents()
 
-## To Do
-* Improved documentation
-* More robust error handling
+# Contributors
 
-Feedback and pull requests welcome!
+
+# License
+
+[MIT](LICENSE)
