@@ -4,6 +4,11 @@ All notable changes to this module are documented in this file.
 
 gemini-api-node module adheres to [Semantic Versioning](http://semver.org/).
 
+## [3.1.0] - 2019-03-22
+
+- Added: allow parameters for WebSocket API 
+
+
 ## [3.0.0] - 2019-03-13
 
 First release based on [https://github.com/mjesuele/gemini-api-node](https://github.com/mjesuele/gemini-api-node "https://github.com/mjesuele/gemini-api-node")

@@ -20,6 +20,27 @@ const createRequestConfig = function createRequestConfig ({ key, secret, payload
   }
 }
 
+const makeParams = function makeParams(options = {}) {
+  let params
+  params = Object.keys(options).reduce((acc, crtKey) => {
+    let prs
+    if (Array.isArray(options[crtKey])) {
+      prs = options[crtKey].reduce((a, crtP) => {
+        return `${a}&${crtKey}=${crtP === true && 'true' || crtP === false && 'false' || crtP}`
+      }, acc)
+      return prs
+    } else {
+      return `${acc}&${crtKey}=${options[crtKey] === true && 'true' || options[crtKey] === false && 'false' || options[crtKey]}`
+    }
+  }, "")
+
+  if (params !== '') {
+    params = `?${params.substring(1)}`
+  }
+
+  return params
+}
+
 export default class Gemini {
   constructor({ key, secret, sandbox = false } = { sandbox: false }) {
     this.key = key;
@@ -132,10 +153,11 @@ export default class Gemini {
   }
 
   // WebSocket
-  newWebSocketOrderEvents() {
-    const requestPath = `/v1/order/events`;
-    this.orderUrl = `${this.baseUrl}${requestPath}`;
-    return new WebSocket(this.orderUrl, createRequestConfig({
+  newWebSocketOrderEvents(options = {}) {
+    const requestPath = `/v1/order/events`
+    const params = makeParams(options)
+
+    return new WebSocket(`${this.baseUrl}${requestPath}${params}`, createRequestConfig({
       key: this.key,
       secret: this.secret,
       payload: {
@@ -145,7 +167,10 @@ export default class Gemini {
     }))
   }
 
-  newWebSocketMarketData(symbol) {
-    return new WebSocket(`${this.baseUrl}/v1/marketdata/${symbol}`)
+  newWebSocketMarketData(symbol, options = {}) {
+    const requestPath = `/v1/marketdata`
+    const params = makeParams(options)
+
+    return new WebSocket(`${this.baseUrl}${requestPath}/${symbol}${params}`)
   }
 }

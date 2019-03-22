@@ -9,8 +9,6 @@ gemini-api-node
 * [Installation](#installation)
 * [Quick examples](#quick-examples)
 * [API](#api)
-	* REST API
-	* WebSocket API
 * [Contributors](#contributors)
 * [License](#license)
 
@@ -43,50 +41,66 @@ gemini.getOrderBook('btcusd', { limit_asks: 10, limit_bids: 10 })
   .catch(console.error)
 ```
 
-### WebSocket API example:
+### WebSocket API examples:
 
 ```js
 import Gemini from 'gemini-api-node'
 
-const gemini = new Gemini({ key, secret, sandbox: false })
-gemini.newWebSocketOrderEvents()
+const gemini = new Gemini()
+let ws = gemini.newWebSocketMarketData('btcusd', { 'top_of_book' : 'true', 'offers': true })
 
-gemini.onopen = () => {
+ws.onopen = () => {
   console.log('Websocket is open')
 }
   
-gemini.onmessage = (...args) => {
-  console.log('Websocket message received')
+ws.onmessage = (message) => {
+  let data = JSON.parse(message.data)
+  console.log('Websocket data received')
 }
 ```
+
+```js
+import Gemini from 'gemini-api-node'
+
+const gemini = new Gemini({ key, secret, sandbox: true })
+let ws = gemini.newWebSocketOrderEvents({ symbolFilter: ['btcusd'], eventTypeFilter: ['fill', 'closed']})
+
+ws.onopen = () => {
+  console.log('Websocket is open')
+}
+  
+ws.onmessage = (message) => {
+  let data = JSON.parse(message.data)
+  console.log('Websocket data received')
+}
+```
+
 
 # API
 
 ## REST
 All methods return promises.
-* getAllSymbols()
-* getTicker(symbol)
-* getOrderBook(symbol, params = {})
-* getTradeHistory(symbol, params = {})
-* getCurrentAuction(symbol)
-* getAuctionHistory(symbol, params = {})
-* newOrder(params = {})
-* cancelOrder({ order_id })
-* cancelAllSessionOrders()
-* cancelAllActiveOrders()
-* getMyOrderStatus({ order_id })
-* getMyActiveOrders()
-* getMyPastTrades(params = {})
-* getMyTradeVolume()
-* getMyAvailableBalances()
-* newAddress(currency)
+* `getAllSymbols()`
+* `getTicker(symbol)`
+* `getOrderBook(symbol, params = {})`
+* `getTradeHistory(symbol, params = {})`
+* `getCurrentAuction(symbol)`
+* `getAuctionHistory(symbol, params = {})`
+* `newOrder(params = {})`
+* `cancelOrder({ order_id })`
+* `cancelAllSessionOrders()`
+* `cancelAllActiveOrders()`
+* `getMyOrderStatus({ order_id })`
+* `getMyActiveOrders()`
+* `getMyPastTrades(params = {})`
+* `getMyTradeVolume()`
+* `getMyAvailableBalances()`
+* `newAddress(currency)`
 
 ## WebSocket
-* newWebSocketMarketData(symbol)
-* newWebSocketOrderEvents()
-
-# Contributors
-
+All methods return a [`WebSocket`](https://github.com/websockets/ws) object.
+* `newWebSocketMarketData(symbol, params = {})`
+* `newWebSocketOrderEvents(params = {})`
 
 # License
 
