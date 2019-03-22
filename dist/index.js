@@ -1,22 +1,5 @@
 "use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-
-var _ws = _interopRequireDefault(require("ws"));
-
-var _axios = _interopRequireDefault(require("axios"));
-
-var _crypto = _interopRequireDefault(require("crypto"));
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : {
-    default: obj
-  };
-}
-
 function _objectSpread(target) {
   for (var i = 1; i < arguments.length; i++) {
     var source = arguments[i] != null ? arguments[i] : {};
@@ -107,6 +90,23 @@ function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
   return Constructor;
+}
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _ws = _interopRequireDefault(require("ws"));
+
+var _axios = _interopRequireDefault(require("axios"));
+
+var _crypto = _interopRequireDefault(require("crypto"));
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    default: obj
+  };
 }
 
 var createRequestConfig = function createRequestConfig(_ref) {
