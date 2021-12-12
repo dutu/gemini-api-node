@@ -28,6 +28,7 @@ let methods = [
   [`getMyPastTrades`, [{ symbol: `btcusd` }]],
   [`getMyTradeVolume`, []],
   [`getMyAvailableBalances`, []],
+  [`getEarnBalances`, []],
 ]
 
 describe('rest API methods', async function() {
