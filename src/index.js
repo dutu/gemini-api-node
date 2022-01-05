@@ -148,6 +148,11 @@ export default class Gemini {
     return this.requestPrivate(`/balances`)
   }
 
+  // Gemini Earn
+  getEarnBalances() {
+    return this.requestPrivate(`/balances/earn`)
+  }
+  
   newAddress(currency) {
     return this.requestPrivate(`/deposit/${currency}/newAddress`)
   }
